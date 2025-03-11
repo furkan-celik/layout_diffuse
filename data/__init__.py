@@ -37,6 +37,13 @@ def get_dataset(**kwargs):
         train_set, val_set = get_cocostuff_caption_label_dataset(
             root, image_size, **kwargs['dataset_args']
         )
+    elif dataset == "wui_class_label":
+        from .wui import build_wui_dsets
+        root = kwargs['root']
+        image_size = kwargs['image_size']
+        train_set, val_set = build_wui_dsets(
+            kwargs['dataset_args']
+        )
     elif dataset == 'vg_layout_label':
         from .vg import get_vg_caption_dataset
         root = kwargs['root']
