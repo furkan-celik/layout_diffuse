@@ -7,7 +7,6 @@ import json
 from torchvision import transforms
 import pytorch_lightning as pl
 
-from layout_diffusion.dataset.util import image_normalize
 
 import torch.nn.functional as F
 import glob
@@ -160,8 +159,8 @@ class WebUIDataset(torch.utils.data.Dataset):
                 for li in range(len(label))
             ]
             # labelHot = makeMultiHotVec(set(labelIdx), self.num_classes)
-            labelNames.append(label[0])
-            labels.append(labelHot[0])
+            labelNames.append(label)
+            # labels.append(labelIdx)
 
         if len(boxes) > self.max_skip_boxes:
             # print("skipped due to too many objects", len(boxes))
@@ -169,10 +168,10 @@ class WebUIDataset(torch.utils.data.Dataset):
 
         boxes = torch.tensor(boxes, dtype=torch.float)
 
-        labels = torch.tensor(labels, dtype=torch.float)
+        # labels = torch.tensor(labels, dtype=torch.float)
 
         target["obj_bbox"] = boxes if len(boxes.shape) == 2 else torch.zeros(0, 4)
-        target["obj_class"] = labels
+        # target["obj_class"] = labels
         target["obj_class_name"] = labelNames
         target["image_id"] = torch.tensor([idx])
         target["area"] = (
@@ -203,12 +202,12 @@ class WebUIDataset(torch.utils.data.Dataset):
             mode="constant",
             value=0,
         )
-        target["obj_class"] = torch.nn.functional.pad(
-            target["obj_class"],
-            (0, 0, 0, self.layout_length - len(target["obj_class"])),
-            mode="constant",
-            value=0,
-        )
+        # target["obj_class_name"] = torch.nn.functional.pad(
+        #     [",".join(c) for c in target["obj_class_name"]],
+        #     (0, 0, 0, self.layout_length - len(target["obj_class_name"])),
+        #     mode="constant",
+        #     value="",
+        # )
         target["is_valid_obj"] = torch.nn.functional.pad(
             target["is_valid_obj"],
             (0, self.layout_length - len(target["is_valid_obj"])),
@@ -216,7 +215,7 @@ class WebUIDataset(torch.utils.data.Dataset):
             value=0,
         )
 
-        return img, target["obj_bbox"], ",".join(target["obj_class_name"])  # return image and target dict
+        return img, target["obj_bbox"], ",".join([",".join(c) for c in target["obj_class_name"]])  # return image and target dict
 
     # except Exception as e:
     #     print("failed", idx, str(e))
@@ -273,7 +272,7 @@ class WebUIDataModule(pl.LightningDataModule):
 
 def build_wui_dsets(cfg, mode="train"):
     assert mode in ["train", "val", "test"]
-    params = cfg.data.parameters
+    params = cfg
     dataset = WebUIDataset(**params)
 
     num_objs = dataset.total_objects()
