@@ -127,7 +127,7 @@ class WebUIDataset(torch.utils.data.Dataset):
         inds = list(range(len(key_dict["labels"])))
         random.shuffle(inds)
 
-        for i in inds:
+        for idx, i in enumerate(inds):
             box = key_dict["contentBoxes"][i]
             box[0] *= scale
             box[1] *= scale
@@ -138,6 +138,7 @@ class WebUIDataset(torch.utils.data.Dataset):
             box[1] = min(max(0, box[1]), img_pil.size[1])
             box[2] = min(max(0, box[2]), img_pil.size[0])
             box[3] = min(max(0, box[3]), img_pil.size[1])
+            box[4] = idx
 
             # skip invalid boxes
             if box[0] < 0 or box[1] < 0 or box[2] < 0 or box[3] < 0:
