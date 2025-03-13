@@ -27,17 +27,17 @@
                 "linear_end": 0.012
             },
             "optim_args": {
-                "lr": 3e-5,
+                "lr": 1e-4,
                 "weight_decay": 0
             },
-            "unet_init_weights": "pretrained_models/LAION_text2img/unet.ckpt",
-            "vqvae_init_weights": "pretrained_models/LAION_text2img/vqvae.ckpt",
-            "text_model_init_weights": "pretrained_models/LAION_text2img/bert.ckpt",
-            "freeze_pretrained_weights": false,
+            "unet_init_weights": "pretrained_models/SD1_5/unet.ckpt",
+            "vqvae_init_weights": "pretrained_models/SD1_5/vqvae.ckpt",
+            "text_model_init_weights": "pretrained_models/SD1_5/clip.ckpt",
+            "freeze_pretrained_weights": true,
             "use_fast_sampling": true,
             "fast_sampling_steps": 20,
             "fast_sampler": "plms",
-            "guidance_scale": 5.0,
+            "guidance_scale": 7.5,
             "clip_denoised": false,
             "scale_factor": 0.18215
         }
@@ -67,16 +67,16 @@
             "use_checkpoint": true,
             "legacy": false,
             "prompt_dim": 128,
-            "num_prompt": 64,
-            "image_in_kv": true,
-            "text_context_dim": 1280,
+            "num_prompt": 0,
+            "image_in_kv": false,
+            "text_context_dim": 768,
             "instance_prompt_attn_type": "layout_partial_v2",
             "instance_attn_res": [
-                1,
-                2
+                2,
+                4
             ],
             "instance_prompt_args": {
-                "num_classes": 181,
+                "num_classes": 200,
                 "embedding_dim": 128
             },
             "verbose": true
@@ -109,10 +109,9 @@
         }
     },
     "text_model": {
-        "model": "modules.bert.bert_embedder.BERTEmbedder",
+        "model": "modules.openclip.modules.FrozenCLIPEmbedder",
         "model_args": {
-            "n_embed": 1280,
-            "n_layer": 32
+            "freeze": true
         }
     },
     "data": {
@@ -143,12 +142,12 @@
             "split": "val",
             "data_len": 1
         },
-        "batch_size": 36,
-        "val_batch_size": 8
+        "batch_size": 1,
+        "val_batch_size": 1
     },
     "sampling_args": {
         "sampling_w_noise": false,
-        "image_size": 32,
+        "image_size": 64,
         "in_channel": 4,
         "num_samples": -1,
         "callbacks": [
