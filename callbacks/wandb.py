@@ -66,7 +66,7 @@ class WandBImageLogger(Callback):
 
     def on_validation_batch_end(
         self, trainer, pl_module, 
-        outputs, batch, batch_idx, dataloader_idx
+        outputs, batch, batch_idx
     ):
         """Called when the validation batch ends."""
         if batch_idx == 0:
@@ -141,7 +141,7 @@ class WandBVAEImageLogger(Callback):
 
     def on_validation_batch_end(
         self, trainer, pl_module, 
-        outputs, batch, batch_idx, dataloader_idx
+        outputs, batch, batch_idx
     ):
         """Called when the validation batch ends."""
         if batch_idx == 0:
