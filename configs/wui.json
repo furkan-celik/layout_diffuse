@@ -76,7 +76,7 @@
                 4
             ],
             "instance_prompt_args": {
-                "num_classes": 200,
+                "num_classes": 100,
                 "embedding_dim": 128
             },
             "verbose": true
