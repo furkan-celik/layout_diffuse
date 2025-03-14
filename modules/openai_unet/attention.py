@@ -455,8 +455,7 @@ class TextTaskPromptCrossAttention(nn.Module):
         q = self.to_q(x)
 
         if self.num_prompt > 0:
-            prompt = self.prompt_to_context_dim(self.prompt)
-            print("c.shape: ", context.shape, "p.shape: ", prompt.shape)
+            prompt = self.prompt_to_context_dim(self.prompt).expand(context.shape[0], -1, -1)
             context = torch.cat([context, prompt], dim=1)
         
         if self.image_in_kv:
