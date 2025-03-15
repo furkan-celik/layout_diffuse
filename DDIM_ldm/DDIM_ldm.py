@@ -575,7 +575,7 @@ class DDIM_LDM_Text_VQVAETraining(DDIM_LDM_VQVAETraining):
             if os.path.exists(text_model_init_weights):
                 print(f'INFO: initialize text model from {text_model_init_weights}')
                 sd = torch.load(text_model_init_weights)
-                self.text_fn.load_state_dict(sd)
+                self.text_fn.load_state_dict(sd, strict=False)
                 for param in self.text_fn.parameters():
                     param.requires_grad = False
             else:

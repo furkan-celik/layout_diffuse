@@ -9,7 +9,7 @@
         ],
         "limit_val_batches": 1,
         "strategy": "ddp",
-        "accumulate_grad_batches": 32,
+        "accumulate_grad_batches": 1,
         "check_val_every_n_epoch": 1
     },
     "callbacks": [
@@ -142,8 +142,8 @@
             "split": "val",
             "data_len": 1
         },
-        "batch_size": 1,
-        "val_batch_size": 1
+        "batch_size": 16,
+        "val_batch_size": 4
     },
     "sampling_args": {
         "sampling_w_noise": false,

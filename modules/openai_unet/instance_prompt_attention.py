@@ -177,7 +177,7 @@ class QKVAttention(nn.Module):
 
         # get prompt
         if context is not None:
-            prompt_embedding = self.class_embedder(inp=context, shape=image_size)
+            prompt_embedding = self.class_embedder(inp=context, shape=image_size).expand(bs, -1, -1, -1)
             prompt_embedding = rearrange(prompt_embedding, 'b h w d -> b d (h w)')
             prompt_tokens = self.to_prompt_token(prompt_embedding)
             prompt_q, prompt_k, prompt_v = prompt_tokens.reshape(bs * self.n_heads, ch * 3, length).split(ch, dim=1)
@@ -211,7 +211,7 @@ class PartialLayoutQKVAttention_v2(QKVAttention):
         
         # get null embedding
         null_context = torch.empty((bs, 0, 5), device=self.device)
-        null_prompt_embedding = self.class_embedder(inp=null_context, shape=image_size)
+        null_prompt_embedding = self.class_embedder(inp=null_context, shape=image_size).expand(bs, -1, -1, -1)
         null_prompt_embedding = rearrange(null_prompt_embedding, 'b h w d -> b d (h w)')
         null_prompt_tokens = self.to_prompt_token(null_prompt_embedding)
         null_prompt_q, null_prompt_k, null_prompt_v = null_prompt_tokens.reshape(bs * self.n_heads, ch * 3, length).split(ch, dim=1)
@@ -236,7 +236,7 @@ class PartialLayoutQKVAttention_v2(QKVAttention):
         if context is not None:
             outputs = []
 
-            prompt_embedding = self.class_embedder(inp=context, shape=image_size) # bs, h, w, embed dim
+            prompt_embedding = self.class_embedder(inp=context, shape=image_size).expand(bs, -1, -1, -1) # bs, h, w, embed dim
             prompt_embedding = rearrange(prompt_embedding, 'b h w d -> b d (h w)')
             prompt_tokens = self.to_prompt_token(prompt_embedding)
             prompt_q, prompt_k, prompt_v = prompt_tokens.reshape(bs * self.n_heads, ch * 3, length).split(ch, dim=1)
@@ -302,7 +302,7 @@ class PartialLayoutQKVAttention_v1(QKVAttention):
         
         # get null embedding
         null_context = torch.empty((bs, 0, 5), device=self.device)
-        null_prompt_embedding = self.class_embedder(inp=null_context, shape=image_size)
+        null_prompt_embedding = self.class_embedder(inp=null_context, shape=image_size).expand(bs, -1, -1, -1)
         null_prompt_embedding = rearrange(null_prompt_embedding, 'b h w d -> b d (h w)')
         null_prompt_tokens = self.to_prompt_token(null_prompt_embedding)
         null_prompt_q, null_prompt_k, null_prompt_v = null_prompt_tokens.reshape(bs * self.n_heads, ch * 3, length).split(ch, dim=1)
@@ -327,7 +327,7 @@ class PartialLayoutQKVAttention_v1(QKVAttention):
         if context is not None:
             outputs = []
 
-            prompt_embedding = self.class_embedder(inp=context, shape=image_size) # bs, h, w, embed dim
+            prompt_embedding = self.class_embedder(inp=context, shape=image_size).expand(bs, -1, -1, -1) # bs, h, w, embed dim
             prompt_embedding = rearrange(prompt_embedding, 'b h w d -> b d (h w)')
             prompt_tokens = self.to_prompt_token(prompt_embedding)
             prompt_q, prompt_k, prompt_v = prompt_tokens.reshape(bs * self.n_heads, ch * 3, length).split(ch, dim=1)

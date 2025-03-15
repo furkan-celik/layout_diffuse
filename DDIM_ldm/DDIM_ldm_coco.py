@@ -114,6 +114,7 @@ class DDIM_LDM_LAION_Text(DDIM_LDM_Text_VQVAETraining):
 
     def process_batch(self, batch, mode='train'):
         y_t, target, t, y_0, model_kwargs = super().process_batch(batch[0], mode)
+        print("b1.shape: ", batch[1].shape, "b2.shape: ", self.encode_text(batch[2]).shape)
         model_kwargs.update({'context': {
             'layout': torch.tensor(batch[1]),
             'text': self.encode_text(batch[2])
@@ -132,12 +133,13 @@ class DDIM_LDM_LAION_Text(DDIM_LDM_Text_VQVAETraining):
             negative = torch.stack([NEGATIVE_PROMPTS_EMBEDDINGS]*noise.shape[0], dim=0)
         else:
             negative = self.encode_text([NEGATIVE_PROMPTS])
+        bs = model_kwargs["context"]["layout"].shape[0]
         y_0, y_t_hist = super().fast_sampling(
             noise, 
             model_kwargs=model_kwargs, 
             uncondition_model_kwargs={'context': {
-                    'layout': torch.empty((1, 0, 5)).to(noise.device),
-                    'text': negative.to(noise.device)
+                    'layout': torch.empty((bs, 0, 5)).to(noise.device),
+                    'text': negative.expand(bs, -1, -1).to(noise.device)
                 }
             }
         )
