@@ -2,7 +2,7 @@
     "expt_name": "wui_LayoutDiffuse",
     "expt_dir": "experiments",
     "trainer_args": {
-        "max_epochs": 10,
+        "max_steps": 2000,
         "accelerator": "gpu",
         "devices": [
             0
@@ -10,7 +10,7 @@
         "limit_val_batches": 1,
         "strategy": "ddp",
         "accumulate_grad_batches": 1,
-        "check_val_every_n_epoch": 1
+        "val_check_interval": 0.19
     },
     "callbacks": [
         "callbacks.WandBImageLogger"
@@ -142,8 +142,8 @@
             "split": "val",
             "data_len": 1
         },
-        "batch_size": 16,
-        "val_batch_size": 4
+        "batch_size": 24,
+        "val_batch_size": 8
     },
     "sampling_args": {
         "sampling_w_noise": false,
